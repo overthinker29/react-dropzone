@@ -3,8 +3,10 @@ react-dropzone
 
 Simple HTML5 drag-drop zone for files with React.js.
 
-Try it out here: http://paramaggarwal.github.io/react-dropzone/
+The dropzone dynamically appears when you drag the file on top of your component.
 ![alt tag](https://github.com/overthinker29/react-dropzone/blob/master/assets/drag.gif)
+
+
 Installation
 ============
 
