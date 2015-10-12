@@ -64,7 +64,7 @@ Features
 
 - `disableClick` - Clicking the `<Dropzone>` brings up the browser file picker. To disable, set to `true`.
 - `multiple` - To accept only a single file, set this to `false`.
-- `disablePaste` - When you copy an image and paste it on the browser, the file will be uploaded. To disable, set to 'true'.
+- `disablePaste` - When you copy an image and paste it on the browser, the file will be uploaded. To disable, set to `true`.
 
 To show a preview of the dropped file while it uploads, use the `file.preview` property. Use `<img src={file.preview} />` to display a preview of the image dropped.
 
