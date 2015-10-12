@@ -1,7 +1,7 @@
 {
-  "name": "react-dropzone",
-  "version": "2.1.0",
-  "description": "Simple HTML5 drag-drop zone with React.js",
+  "name": "react-dynamic-dropzone",
+  "version": "1.0.0",
+  "description": "React.js Dropzone dynamically created on Dragover.",
   "main": "lib/index.js",
   "scripts": {
     "build": "babel index.js --out-file lib/index.js",
@@ -16,13 +16,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:paramaggarwal/react-dropzone.git"
+    "url": "git@github.com:overthinker29/react-dynamic-dropzone.git"
   },
   "bugs": {
-    "url": "https://github.com/paramaggarwal/react-dropzone/issues"
+    "url": "https://github.com/overthinker29/react-dynamic-dropzone/issues"
   },
-  "homepage": "https://github.com/paramaggarwal/react-dropzone",
-  "author": "Param Aggarwal",
+  "homepage": "https://github.com/overthinker29/react-dynamic-dropzone",
+  "author": "Vaibhav Nachankar",
   "license": "MIT",
   "dependencies": {
     "attr-accept": "^1.0.1"
