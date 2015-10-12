@@ -27,7 +27,7 @@
   "dependencies": {
     "attr-accept": "^1.0.1"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "babel": "^5.8.21"
   }
 }
