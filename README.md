@@ -15,7 +15,7 @@ Installation
 The easiest way to use react-dropzone is to install it from npm and include it in your React build process (using [Webpack](http://webpack.github.io/), [Browserify](http://browserify.org/), etc).
 
 ```
-npm install --save react-dropzone
+npm install --save react-dynamic-dropzone
 ```
 
 Create a standalone module using *WebPack*:
