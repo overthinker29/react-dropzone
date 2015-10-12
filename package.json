@@ -1,6 +1,6 @@
 {
   "name": "react-dynamic-dropzone",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React.js Dropzone dynamically created on Dragover.",
   "main": "lib/index.js",
   "scripts": {
