@@ -1,73 +1,74 @@
-var React = require('react');
-var accept = require('attr-accept');
+import React, { Component } from 'react';
+import { accept } from 'attr-accept';
+import PropTypes from 'prop-types';
 
-var Dropzone = React.createClass({
+class Dropzone extends Component{
 
-    getDefaultProps: function() {
+    getDefaultProps = () => {
         return {
             disableClick: false,
             disablePaste: false,
             multiple: true
         };
-    },
+    };
 
-    getInitialState: function() {
-        return {
+    constructor(props){
+        super(props);
+        this.state = {
             isDragActive: false,
             showDropZone: false,
             showDropZone: false,
         };
-    },
+    };
 
-    propTypes: {
-        onDrop: React.PropTypes.func,
-        onPaste: React.PropTypes.func,
-        onDropAccepted: React.PropTypes.func,
-        onDropRejected: React.PropTypes.func,
-        onDragEnter: React.PropTypes.func,
-        onDragLeave: React.PropTypes.func,
+    propTypes = {
+        onDrop: PropTypes.func,
+        onPaste: PropTypes.func,
+        onDropAccepted: PropTypes.func,
+        onDropRejected: PropTypes.func,
+        onDragEnter: PropTypes.func,
+        onDragLeave: PropTypes.func,
 
-        style: React.PropTypes.object,
-        activeStyle: React.PropTypes.object,
-        className: React.PropTypes.string,
-        activeClassName: React.PropTypes.string,
-        rejectClassName: React.PropTypes.string,
+        style: PropTypes.object,
+        activeStyle: PropTypes.object,
+        className: PropTypes.string,
+        activeClassName: PropTypes.string,
+        rejectClassName: PropTypes.string,
 
-        disableClick: React.PropTypes.bool,
-        disablePaste: React.PropTypes.bool,
-        multiple: React.PropTypes.bool,
-        accept: React.PropTypes.string,
-    },
+        disableClick: PropTypes.bool,
+        disablePaste: PropTypes.bool,
+        multiple: PropTypes.bool,
+        accept: PropTypes.arrayOf(PropTypes.string),
+    }
 
-    componentDidMount: function() {
+    componentDidMount = () => {
         window.addEventListener('dragenter',this.onDragEnter);
         window.addEventListener('dragleave',this.onDragLeave);
         window.addEventListener('dragover',this.onDragOver);
         window.addEventListener('drop',this.onDrop);
         window.addEventListener('paste',this.onPaste);
-    },
+    };
 
-    componentWillUnmount: function() {
+    componentWillUnmount = () => {
         window.removeEventListener('dragenter', this.onDragEnter);
         window.removeEventListener('dragleave',this.onDragLeave);
         window.removeEventListener('dragover',this.onDragOver);
         window.removeEventListener('drop',this.onDrop);
         window.removeEventListener('paste',this.onPaste);
-    },
+    };
 
-    allFilesAccepted: function(files) {
-        return files.every(file => accept(file, this.props.accept))
-    },
+    allFilesAccepted = (files) => {
+        return files;//files.every(file => accept(file, this.props.accept));
+    };
 
-    onDragEnter: function(event) {
+    onDragEnter = (event) => {
         event.preventDefault();
         // This is tricky. During the drag even the dataTransfer.files is null
         // But Chrome implements some drag store, which is accesible via dataTransfer.items
-        var dataTransferItems = event.dataTransfer && event.dataTransfer.items ? event.dataTransfer.items : [];
-
+        let dataTransferItems = event.dataTransfer && event.dataTransfer.items ? event.dataTransfer.items : [];
         // Now we need to convert the DataTransferList to Array
-        var itemsArray = Array.prototype.slice.call(dataTransferItems);
-        var allFilesAccepted = this.allFilesAccepted(itemsArray);
+        let itemsArray = Array.prototype.slice.call(dataTransferItems);
+        let allFilesAccepted = this.allFilesAccepted(itemsArray);
 
         this.setState({
             isDragActive: allFilesAccepted,
@@ -78,13 +79,13 @@ var Dropzone = React.createClass({
         if (this.props.onDragEnter) {
             this.props.onDragEnter(event);
         }
-    },
+    };
 
-    onDragOver: function (event) {
+    onDragOver = (event) => {
         event.preventDefault();
-    },
+    };
 
-    onDragLeave: function(event) {
+    onDragLeave = (event) => {
         event.preventDefault();
 
         this.setState({
@@ -95,22 +96,25 @@ var Dropzone = React.createClass({
         if(event.pageX==0){
             this.setState({showDropZone:false});
         }
-        
+
         if (this.props.onDragLeave) {
             this.props.onDragLeave(event);
         }
-    },
+    };
 
-    onDrop: function(event) {
+    onDrop = (event) => {
         event.preventDefault();
         this.captureFile(event)
-    },
+    };
 
-    onPaste: function(event){
+    onPaste = (event) => {
+        return;
         if(!this.props.disablePaste){
             this.setState({showDropZone:true});
-            var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-            var files = [];
+            let items = (event.clipboardData || event.originalEvent.clipboardData).items;
+
+            let files = [];
+            let index = 0;
             for (index in items) {
                 var item = items[index];
                 if (item.kind === 'file') {
@@ -118,32 +122,24 @@ var Dropzone = React.createClass({
                     blob.lastModifiedDate = new Date();
                     blob.name = "image-"+new Date()+".jpg";
                     blob.type = "image/jpeg";
-                    var file = new File([blob], blob.name);
+                    let file = new File([blob], blob.name);
                     files.push(file);
                 }
             }
             if(files.length){
-                this.captureFile(event,files);
+                this.captureFile(event, files);
             }
         }
-    },
+    };
 
-    captureFile: function(event, files){
+    captureFile = (event, fileList) => {
         this.setState({
             isDragActive: false,
             isDragReject: false,
             showDropZone: false,
         });
 
-        var droppedFiles = files?files: (event.dataTransfer ? event.dataTransfer.files : event.target.files);
-        var max = this.props.multiple ? droppedFiles.length : 1;
-        var files = [];
-
-        for (var i = 0; i < max; i++) {
-            var file = droppedFiles[i];
-            file.preview = URL.createObjectURL(file);
-            files.push(file);
-        }
+        let files = fileList ? fileList : (event.dataTransfer ? event.dataTransfer.files : event.target.files);
 
         if (this.props.onDrop) {
             this.props.onDrop(files, event);
@@ -159,28 +155,26 @@ var Dropzone = React.createClass({
                 this.props.onDropRejected(files, event);
             }
         }
+    };
 
-    },
-
-    onClick: function () {
+    onClick = () => {
         if (!this.props.disableClick) {
             this.open();
         }
-    },
+    };
 
-    open: function() {
-        var fileInput = React.findDOMNode(this.refs.fileInput);
+    open = () => {
+        let fileInput = React.findDOMNode(this.refs.fileInput);
         fileInput.value = null;
         fileInput.click();
-    },
+    };
 
-    render: function() {
-
+    render = () =>{
         if(!this.state.showDropZone){
             return <span/>;
         }
 
-        var className;
+        let className;
         if (this.props.className) {
             className = this.props.className;
             if (this.state.isDragActive) {
@@ -191,7 +185,7 @@ var Dropzone = React.createClass({
             };
         };
 
-        var style, activeStyle;
+        let style, activeStyle;
         if (this.props.style || this.props.activeStyle) {
             if (this.props.style) {
                 style = this.props.style;
@@ -199,40 +193,40 @@ var Dropzone = React.createClass({
             if (this.props.activeStyle) {
                 activeStyle = this.props.activeStyle;
             }
-        } 
+        }
         else if (!className) {
             style = {
-                position: 'fixed',
+                position:'fixed !important',
                 width:'100%',
                 height:'100%',
-                zIndex: '9999',
-                'backgroundColor': 'rgba(0, 0, 0, 0.8)',        
-                'color':'white',
+                zIndex: 9999,
+                backgroundColor: '#f4f4f4',
+                opacity: 0.7,
+                border: 'solid 5px #cda54b',
+                color:'#cda54b',
                 fontSize: '40px',
                 padding: '200px',
                 textAlign: 'center',
                 top: '0',
                 bottom: '0',
                 right: '0',
-                left: '0',
-
+                left: '0'
             };
             activeStyle = {
-                'backgroundColor': 'white',        
-                'color':'black',
+                backgroundColor: 'white',
+                color:'black',
             };
         }
-
-        var appliedStyle;
+        let appliedStyle;
         if (activeStyle && this.state.isDragActive) {
             appliedStyle = {
-                ...style,
-                ...activeStyle
-                };
-            } 
-            else {
-                appliedStyle = {
-                ...style
+              ...style,
+              ...activeStyle
+            };
+        }
+        else {
+            appliedStyle = {
+              ...style
             };
         };
 
@@ -245,7 +239,7 @@ var Dropzone = React.createClass({
                 onDragOver={this.onDragOver}
                 onDragLeave={this.onDragLeave}
                 onDrop={this.onDrop}>
-                    {this.props.children}
+                    {this.props.children || "Drop Files to upload!"}
                     <input
                         type='file'
                         ref='fileInput'
@@ -256,6 +250,6 @@ var Dropzone = React.createClass({
             </div>
         );
     }
-});
+}
 
-module.exports = Dropzone;
+export default Dropzone;
